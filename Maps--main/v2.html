@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sistem Navigasi UIN</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Leaflet CSS & JS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+
+    #map {
+      height: calc(100vh - 112px); /* Header height */
+    }
+
+    .suggestions {
+      position: absolute;
+      background: white;
+      border: 1px solid #ccc;
+      z-index: 999;
+      max-height: 120px;
+      overflow-y: auto;
+      width: 100%;
+      border-radius: 0 0 8px 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .suggestion-item {
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+    }
+
+    .suggestion-item:last-child {
+      border-bottom: none;
+    }
+
+    .suggestion-item:hover {
+      background-color: #f0f0f0;
+    }
+
+    #directions .step {
+      background: #f9f9f9;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+
+    .custom-marker div {
+      font-weight: bold;
+      background-color: #0e7490;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 9999px;
+    }
+
+    .current-location-marker div {
+      font-size: 1.5rem;
+    }
+  </style>
+</head>
+<body class="bg-gray-100">
+
+  <!-- HEADER -->
+  <header class="bg-cyan-700 text-white px-6 py-4 rounded-b-[40px] shadow-md flex items-center gap-4">
+    <img src="https://cdn.builder.io/api/v1/image/assets/ee72701c389648159096232bbc109083/a36ffef24e558e116ad136c103ac4a337658b9ce?placeholderIfAbsent=true" alt="Logo" class="w-32">
+    <div class="ml-4">
+      <h1 class="text-2xl font-bold leading-snug">Sistem Navigasi Kampus</h1>
+      <p class="text-sm font-semibold">UIN Syarif Hidayatullah Jakarta</p>
+    </div>
+  </header>
+
+  <!-- MAP CONTAINER -->
+  <div class="relative w-full">
+
+    <!-- MAP -->
+    <div id="map" class="w-full z-0"></div>
+
+    <!-- FLOATING INPUT BOX -->
+    <div class="absolute top-6 left-6 w-80 bg-white p-5 rounded-xl shadow-xl z-10">
+      <h2 class="text-lg font-bold text-cyan-700 mb-4">Navigasi Kampus</h2>
+
+      <label for="start-point" class="block text-sm font-semibold text-gray-700">Lokasi Asal</label>
+      <div class="relative mb-3">
+        <input id="start-point" type="text" placeholder="Cari lokasi asal..." class="w-full mt-1 p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-cyan-500" autocomplete="off">
+        <div id="start-suggestions" class="suggestions hidden"></div>
+      </div>
+
+      <label for="end-point" class="block text-sm font-semibold text-gray-700">Lokasi Tujuan</label>
+      <div class="relative mb-4">
+        <input id="end-point" type="text" placeholder="Cari lokasi tujuan..." class="w-full mt-1 p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-cyan-500" autocomplete="off">
+        <div id="end-suggestions" class="suggestions hidden"></div>
+      </div>
+
+      <div class="flex gap-3">
+        <button id="route-button" class="flex-1 bg-cyan-700 hover:bg-cyan-800 text-white py-2 rounded font-medium">Tampilkan Rute</button>
+        <button id="reset-button" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 rounded font-medium">Reset</button>
+      </div>
+    </div>
+
+    <!-- FLOATING DIRECTION BOX -->
+    <div id="directions-box" class="absolute bottom-6 left-6 w-80 bg-white p-5 rounded-xl shadow-xl z-10 max-h-[300px] overflow-y-auto hidden">
+        <h2 class="text-lg font-bold text-cyan-700 mb-2">Petunjuk Arah</h2>
+        <div id="route-summary" class="text-sm text-gray-600 mb-2"></div>
+        <div id="directions" class="text-sm space-y-3"></div>
+        <div id="alternative-routes" class="mt-6 space-y-4"></div>
+    </div>
+
+    <!-- CUSTOM MAP CONTROLS -->
+    <div class="absolute top-6 right-6 flex flex-col gap-2 z-10">
+      <button id="locate-button" class="w-10 h-10 bg-white rounded-full shadow flex items-center justify-center hover:bg-gray-100" title="Lokasi Saya">📍</button>
+      <button id="zoom-in-button" class="w-10 h-10 bg-white rounded-full shadow flex items-center justify-center hover:bg-gray-100" title="Zoom In">＋</button>
+      <button id="zoom-out-button" class="w-10 h-10 bg-white rounded-full shadow flex items-center justify-center hover:bg-gray-100" title="Zoom Out">－</button>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="bg-cyan-700 text-white py-4 px-6 text-sm text-center">
+    © 2025 Sistem Informasi UIN Jakarta — Versi 2.1.0
+  </footer>
+
+  <!-- APP SCRIPT -->
+  <script src="app.js" type="module"></script>
+</body>
+</html>
